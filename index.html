@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ExoVue Test</title>
+<link rel="stylesheet" href="css/exovue.css">
+</head>
+
+<body>
+  <div id="app">
+    <div class="container">
+      <h1>{{ appName }}</h1>
+      <h2>{{subhead}}</h2>
+      <div class="grid">
+        <count-para id="itemA" :value="confirmedPlanets.value" :text="confirmedPlanets.text"></count-para>
+        <named-stat id="itemB" :units="mostMass.units" :value="mostMass.value" :text="mostMass.text" :planet="mostMass.planet"></named-stat>
+        <named-stat id="itemC" :units="leastMass.units" :value="leastMass.value" :text="leastMass.text" :planet="leastMass.planet"></named-stat>
+        <named-stat id="itemD" :units="biggest.units" :value="biggest.value" :text="biggest.text" :planet="biggest.planet"></named-stat>
+        <named-stat id="itemE" :units="smallest.units" :value="smallest.value" :text="smallest.text" :planet="smallest.planet"></named-stat>
+        <named-stat id="itemF" :units="furthest.units" :value="furthest.value" :text="furthest.text" :planet="furthest.planet"></named-stat>
+        <named-stat id="itemG" :units="closest.units" :value="closest.value" :text="closest.text" :planet="closest.planet"></named-stat>
+        <named-stat id="itemH" :units="longestOrbit.units" :value="longestOrbit.value" :text="longestOrbit.text" :planet="longestOrbit.planet"></named-stat>
+        <named-stat id="itemI" :units="shortestOrbit.units" :value="shortestOrbit.value" :text="shortestOrbit.text" :planet="shortestOrbit.planet"></named-stat>
+      </div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+<script type="text/javascript">
+Vue.component('count-para', {
+  props: ['value', 'text'],
+  template: '<div id="confPlanets" class="red"><h3> {{ text }}</h3><p>{{ value }}</p></div>'
+})
+Vue.component('named-stat', {
+  props: ['text', 'value', 'units', 'planet', 'planet' ],
+  template: '<div class="red"><h3>{{ text }}</h3> <p> {{planet}} - {{ value }} {{ units }}</p></div>'
+})
+var app = new Vue({
+el: '#app',
+data: {
+  appName: 'ExoVue',
+  subhead: 'Exoplanet Data brought to you by VueJS and the NASA Exoplanet Archive',
+  confirmedPlanets: {
+      value: '',
+      text: 'Confirmed Planets: '
+    },
+  mostMass: {
+    text: 'Most mass:',
+    units: 'Earth masses',
+    value: '',
+    planet: ''
+  },
+  leastMass: {
+    text: 'Least mass:',
+    units: 'Earth masses',
+    value: '',
+    planet: ''
+  },
+  biggest: {
+    text: 'Biggest:',
+    units: 'Earth radii',
+    value: '',
+    planet: ''
+  },
+  smallest: {
+    text: 'Smallest:',
+    units: 'Earth radii',
+    value: '',
+    planet: ''
+  },
+  closest: {
+    text: 'Closest:',
+    units: 'parsecs',
+    value: '',
+    planet: ''
+  },
+  furthest: {
+    text: 'Furthest:',
+    units: 'parsecs',
+    value: '',
+    planet: ''
+  },
+  longestOrbit: {
+    text: 'Longest Orbit:',
+    units: 'days',
+    value: '',
+    planet: ''
+  },
+  shortestOrbit: {
+    text: 'Shortest Orbit:',
+    units: 'days',
+    value: '',
+    planet: ''
+  }
+},
+methods: {
+  arrayMax: function(){
+    Array.prototype.max = function() {
+  return Math.max.apply(null, this);
+};
+  }
+},
+created(){
+  this.$http.get('https://exoplanetarchive.ipac.caltech.edu/cgi-bin/nstedAPI/nph-nstedAPI?table=exoplanets&select=pl_hostname,pl_name,pl_masse,pl_rade,st_dist,pl_orbper&order=dec&format=json')
+  .then(function(data){
+    var maxWght, minWght, bigRad, smallRad, closePlan, furthPlan, longOrb, shortOrb;
+    var dataLength = data.body.length;
+    var weights = [];
+    var radii = [];
+    var dists = [];
+    var orbits = [];
+    for (var i = 0; i < dataLength; i++) {
+    //console.log(data.body[i]['pl_masse'])
+      if(data.body[i]['pl_masse'] != null) {
+        weights.push(data.body[i]['pl_masse'])
+      }
+      if(data.body[i]['pl_rade'] != null) {
+        radii.push(data.body[i]['pl_rade'])
+      }
+      if(data.body[i]['st_dist'] != null){
+        dists.push(data.body[i]['st_dist'])
+      }
+      if(data.body[i]['pl_orbper'] != null){
+      orbits.push(data.body[i]['pl_orbper'])
+      }
+    }
+    maxWght = Math.max.apply(Math, weights);
+    minWght = Math.min.apply(Math, weights);
+    bigRad = Math.max.apply(Math, radii);
+    smallRad = Math.min.apply(Math, radii);
+    furthPlan = Math.max.apply(Math, dists);
+    closePlan = Math.min.apply(Math, dists);
+    longOrb = Math.max.apply(Math, orbits);
+    shortOrb = Math.min.apply(Math, orbits);
+    console.log(data);
+    for (var j = 0; j < dataLength; j++) {
+      if (data.body[j]['pl_masse'] ==  maxWght) {
+        this.mostMass.planet = data.body[j]['pl_name'];
+        this.mostMass.value = maxWght;
+      }
+      if (data.body[j]['pl_masse'] ==  minWght) {
+        this.leastMass.planet = data.body[j]['pl_name'];
+        this.leastMass.value = minWght;
+      }
+      if (data.body[j]['pl_rade'] == bigRad) {
+        this.biggest.planet = data.body[j]['pl_name'];
+        this.biggest.value =  bigRad;
+
+      }
+      if (data.body[j]['pl_rade'] == smallRad) {
+        this.smallest.planet = data.body[j]['pl_name'];
+        this.smallest.value = smallRad;
+      }
+      if (data.body[j]['st_dist'] == closePlan) {
+        this.closest.planet = data.body[j]['pl_name'];
+        this.closest.value = closePlan;
+      }
+      if (data.body[j]['st_dist'] == furthPlan) {
+        this.furthest.planet = data.body[j]['pl_name'];
+        this.furthest.value = furthPlan;
+      }
+      if (data.body[j]['pl_orbper'] == longOrb) {
+        this.longestOrbit.planet = data.body[j]['pl_name'];
+        this.longestOrbit.value = longOrb;
+
+      }
+      if (data.body[j]['pl_orbper'] == shortOrb) {
+        this.shortestOrbit.planet = data.body[j]['pl_name'];
+        this.shortestOrbit.value = shortOrb;
+      }
+    }
+    this.confirmedPlanets.value = dataLength;
+  })
+}
+})
+
+</script>
+</body>
+
+</html>
