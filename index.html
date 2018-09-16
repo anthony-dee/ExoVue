@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>ExoVue Test</title>
+
+<link href="https://fonts.googleapis.com/css?family=Comfortaa|Lato:700" rel="stylesheet">
 <link rel="stylesheet" href="css/exovue.css">
 </head>
 
@@ -17,10 +19,11 @@
         <named-stat id="itemC" :units="leastMass.units" :value="leastMass.value" :text="leastMass.text" :planet="leastMass.planet"></named-stat>
         <named-stat id="itemD" :units="biggest.units" :value="biggest.value" :text="biggest.text" :planet="biggest.planet"></named-stat>
         <named-stat id="itemE" :units="smallest.units" :value="smallest.value" :text="smallest.text" :planet="smallest.planet"></named-stat>
-        <named-stat id="itemF" :units="furthest.units" :value="furthest.value" :text="furthest.text" :planet="furthest.planet"></named-stat>
-        <named-stat id="itemG" :units="closest.units" :value="closest.value" :text="closest.text" :planet="closest.planet"></named-stat>
-        <named-stat id="itemH" :units="longestOrbit.units" :value="longestOrbit.value" :text="longestOrbit.text" :planet="longestOrbit.planet"></named-stat>
-        <named-stat id="itemI" :units="shortestOrbit.units" :value="shortestOrbit.value" :text="shortestOrbit.text" :planet="shortestOrbit.planet"></named-stat>
+        <named-stat id="itemF" :units="starWithMostPlanets.units" :value="starWithMostPlanets.value" :text="starWithMostPlanets.text" :planet="starWithMostPlanets.star"></named-stat>
+        <named-stat id="itemG" :units="furthest.units" :value="furthest.value" :text="furthest.text" :planet="furthest.planet"></named-stat>
+        <named-stat id="itemH" :units="closest.units" :value="closest.value" :text="closest.text" :planet="closest.planet"></named-stat>
+        <named-stat id="itemI" :units="longestOrbit.units" :value="longestOrbit.value" :text="longestOrbit.text" :planet="longestOrbit.planet"></named-stat>
+        <named-stat id="itemJ" :units="shortestOrbit.units" :value="shortestOrbit.value" :text="shortestOrbit.text" :planet="shortestOrbit.planet"></named-stat>
       </div>
     </div>
   </div>
@@ -30,11 +33,11 @@
 <script type="text/javascript">
 Vue.component('count-para', {
   props: ['value', 'text'],
-  template: '<div id="confPlanets" class="red"><h3> {{ text }}</h3><p>{{ value }}</p></div>'
+  template: '<div id="confPlanets"><h3 class="statLabel"> {{ text }}</h3><p class="statText">{{ value }}</p></div>'
 })
 Vue.component('named-stat', {
   props: ['text', 'value', 'units', 'planet', 'planet' ],
-  template: '<div class="red"><h3>{{ text }}</h3> <p> {{planet}} - {{ value }} {{ units }}</p></div>'
+  template: '<div><h3 class="statLabel">{{ text }}</h3> <p class="statText">{{planet}}</p><p class="statText">{{ value }} {{ units }}</p></div>'
 })
 var app = new Vue({
 el: '#app',
@@ -43,52 +46,58 @@ data: {
   subhead: 'Exoplanet Data brought to you by VueJS and the NASA Exoplanet Archive',
   confirmedPlanets: {
       value: '',
-      text: 'Confirmed Planets: '
+      text: 'Confirmed Planets'
     },
+  starWithMostPlanets: {
+    text: 'Star with most planets',
+    units: 'planets',
+    value: '',
+    star: ''
+  },
   mostMass: {
-    text: 'Most mass:',
+    text: 'Highest mass',
     units: 'Earth masses',
     value: '',
     planet: ''
   },
   leastMass: {
-    text: 'Least mass:',
+    text: 'Lowest mass',
     units: 'Earth masses',
     value: '',
     planet: ''
   },
   biggest: {
-    text: 'Biggest:',
+    text: 'Biggest',
     units: 'Earth radii',
     value: '',
     planet: ''
   },
   smallest: {
-    text: 'Smallest:',
+    text: 'Smallest',
     units: 'Earth radii',
     value: '',
     planet: ''
   },
   closest: {
-    text: 'Closest:',
+    text: 'Closest',
     units: 'parsecs',
     value: '',
     planet: ''
   },
   furthest: {
-    text: 'Furthest:',
+    text: 'Furthest',
     units: 'parsecs',
     value: '',
     planet: ''
   },
   longestOrbit: {
-    text: 'Longest Orbit:',
+    text: 'Longest Orbit',
     units: 'days',
     value: '',
     planet: ''
   },
   shortestOrbit: {
-    text: 'Shortest Orbit:',
+    text: 'Shortest Orbit',
     units: 'days',
     value: '',
     planet: ''
@@ -102,14 +111,16 @@ methods: {
   }
 },
 created(){
-  this.$http.get('https://exoplanetarchive.ipac.caltech.edu/cgi-bin/nstedAPI/nph-nstedAPI?table=exoplanets&select=pl_hostname,pl_name,pl_masse,pl_rade,st_dist,pl_orbper&order=dec&format=json')
+  this.$http.get('https://exoplanetarchive.ipac.caltech.edu/cgi-bin/nstedAPI/nph-nstedAPI?table=exoplanets&select=pl_hostname,pl_name,pl_masse,pl_rade,st_dist,pl_orbper,pl_pnum&order=dec&format=json')
   .then(function(data){
+    console.log(data)
     var maxWght, minWght, bigRad, smallRad, closePlan, furthPlan, longOrb, shortOrb;
     var dataLength = data.body.length;
     var weights = [];
     var radii = [];
     var dists = [];
     var orbits = [];
+    var numberPlanets = [];
     for (var i = 0; i < dataLength; i++) {
     //console.log(data.body[i]['pl_masse'])
       if(data.body[i]['pl_masse'] != null) {
@@ -122,9 +133,13 @@ created(){
         dists.push(data.body[i]['st_dist'])
       }
       if(data.body[i]['pl_orbper'] != null){
-      orbits.push(data.body[i]['pl_orbper'])
+        orbits.push(data.body[i]['pl_orbper'])
+      }
+      if(data.body[i]['pl_pnum'] != null){
+        numberPlanets.push(data.body[i]['pl_pnum'])
       }
     }
+    console.log(numberPlanets);
     maxWght = Math.max.apply(Math, weights);
     minWght = Math.min.apply(Math, weights);
     bigRad = Math.max.apply(Math, radii);
@@ -133,6 +148,7 @@ created(){
     closePlan = Math.min.apply(Math, dists);
     longOrb = Math.max.apply(Math, orbits);
     shortOrb = Math.min.apply(Math, orbits);
+    mostPlanets = Math.max.apply(Math, numberPlanets);
     console.log(data);
     for (var j = 0; j < dataLength; j++) {
       if (data.body[j]['pl_masse'] ==  maxWght) {
@@ -168,6 +184,11 @@ created(){
       if (data.body[j]['pl_orbper'] == shortOrb) {
         this.shortestOrbit.planet = data.body[j]['pl_name'];
         this.shortestOrbit.value = shortOrb;
+      }
+      if (data.body[j]['pl_pnum'] == mostPlanets) {
+        console.log(data.body[j]['pl_hostname']);
+        this.starWithMostPlanets.star = data.body[j]['pl_hostname'];
+        this.starWithMostPlanets.value = mostPlanets;
       }
     }
     this.confirmedPlanets.value = dataLength;
