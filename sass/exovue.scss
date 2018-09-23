@@ -2,7 +2,7 @@
 
 @import "variables";
 @import "mixins";
-
+@import "loader";
 body {
   @include  fontFamHelVet;
 }

@@ -14,6 +14,7 @@
       <h1>{{ appName }}</h1>
       <h2>{{subhead}}</h2>
       <div class="grid">
+        <loader :state="state"></loader>
         <count-para id="itemA" :value="confirmedPlanets.value" :text="confirmedPlanets.text"></count-para>
         <named-stat id="itemB" :units="mostMass.units" :value="mostMass.value" :text="mostMass.text" :planet="mostMass.planet"></named-stat>
         <named-stat id="itemC" :units="leastMass.units" :value="leastMass.value" :text="leastMass.text" :planet="leastMass.planet"></named-stat>
@@ -39,11 +40,16 @@ Vue.component('named-stat', {
   props: ['text', 'value', 'units', 'planet', 'planet' ],
   template: '<div><h3 class="statLabel">{{ text }}</h3> <p class="statText">{{planet}}</p><p class="statText">{{ value }} {{ units }}</p></div>'
 })
+Vue.component('loader', {
+  props:['state'],
+  template: '<div id="loader" class="flex"><div id="lgCircle" class="circle flex"><div id="mdCircle" class="circle flex"><div id="smCircle" class="circle"></div></div></div><div><h1>{{ state }} Data</h1></div></div>'
+})
 var app = new Vue({
 el: '#app',
 data: {
   appName: 'ExoVue',
   subhead: 'Exoplanet Data brought to you by VueJS and the NASA Exoplanet Archive',
+  state: 'Fetching',
   confirmedPlanets: {
       value: '',
       text: 'Confirmed Planets'
@@ -114,6 +120,7 @@ created(){
   this.$http.get('https://exoplanetarchive.ipac.caltech.edu/cgi-bin/nstedAPI/nph-nstedAPI?table=exoplanets&select=pl_hostname,pl_name,pl_masse,pl_rade,st_dist,pl_orbper,pl_pnum&order=dec&format=json')
   .then(function(data){
     console.log(data)
+    this.state = 'Sorting';
     var maxWght, minWght, bigRad, smallRad, closePlan, furthPlan, longOrb, shortOrb;
     var dataLength = data.body.length;
     var weights = [];
