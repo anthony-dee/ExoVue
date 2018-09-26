@@ -13,19 +13,23 @@
     <div class="container">
       <h1>{{ appName }}</h1>
       <h2>{{subhead}}</h2>
-      <div class="grid">
-        <loader :state="state"></loader>
-        <count-para id="itemA" :value="confirmedPlanets.value" :text="confirmedPlanets.text"></count-para>
-        <named-stat id="itemB" :units="mostMass.units" :value="mostMass.value" :text="mostMass.text" :planet="mostMass.planet"></named-stat>
-        <named-stat id="itemC" :units="leastMass.units" :value="leastMass.value" :text="leastMass.text" :planet="leastMass.planet"></named-stat>
-        <named-stat id="itemD" :units="biggest.units" :value="biggest.value" :text="biggest.text" :planet="biggest.planet"></named-stat>
-        <named-stat id="itemE" :units="smallest.units" :value="smallest.value" :text="smallest.text" :planet="smallest.planet"></named-stat>
-        <named-stat id="itemF" :units="starWithMostPlanets.units" :value="starWithMostPlanets.value" :text="starWithMostPlanets.text" :planet="starWithMostPlanets.star"></named-stat>
-        <named-stat id="itemG" :units="furthest.units" :value="furthest.value" :text="furthest.text" :planet="furthest.planet"></named-stat>
-        <named-stat id="itemH" :units="closest.units" :value="closest.value" :text="closest.text" :planet="closest.planet"></named-stat>
-        <named-stat id="itemI" :units="longestOrbit.units" :value="longestOrbit.value" :text="longestOrbit.text" :planet="longestOrbit.planet"></named-stat>
-        <named-stat id="itemJ" :units="shortestOrbit.units" :value="shortestOrbit.value" :text="shortestOrbit.text" :planet="shortestOrbit.planet"></named-stat>
-      </div>
+      <transition name="fade">
+        <loader v-show="fetching"></loader>
+      </transition>
+      <transition name="fade">
+        <div v-show="!fetching" class="grid">
+          <count-para  id="itemA" :value="confirmedPlanets.value" :text="confirmedPlanets.text"></count-para>
+          <named-stat v-show="!fetching" id="itemB" :units="mostMass.units" :value="mostMass.value" :text="mostMass.text" :planet="mostMass.planet"></named-stat>
+          <named-stat v-show="!fetching" id="itemC" :units="leastMass.units" :value="leastMass.value" :text="leastMass.text" :planet="leastMass.planet"></named-stat>
+          <named-stat v-show="!fetching" id="itemD" :units="biggest.units" :value="biggest.value" :text="biggest.text" :planet="biggest.planet"></named-stat>
+          <named-stat v-show="!fetching" id="itemE" :units="smallest.units" :value="smallest.value" :text="smallest.text" :planet="smallest.planet"></named-stat>
+          <named-stat v-show="!fetching" id="itemF" :units="starWithMostPlanets.units" :value="starWithMostPlanets.value" :text="starWithMostPlanets.text" :planet="starWithMostPlanets.star"></named-stat>
+          <named-stat v-show="!fetching" id="itemG" :units="furthest.units" :value="furthest.value" :text="furthest.text" :planet="furthest.planet"></named-stat>
+          <named-stat v-show="!fetching" id="itemH" :units="closest.units" :value="closest.value" :text="closest.text" :planet="closest.planet"></named-stat>
+          <named-stat v-show="!fetching" id="itemI" :units="longestOrbit.units" :value="longestOrbit.value" :text="longestOrbit.text" :planet="longestOrbit.planet"></named-stat>
+          <named-stat v-show="!fetching" id="itemJ" :units="shortestOrbit.units" :value="shortestOrbit.value" :text="shortestOrbit.text" :planet="shortestOrbit.planet"></named-stat>
+        </div>
+        </transition>
     </div>
   </div>
 
@@ -34,22 +38,22 @@
 <script type="text/javascript">
 Vue.component('count-para', {
   props: ['value', 'text'],
-  template: '<div id="confPlanets"><h3 class="statLabel"> {{ text }}</h3><p class="statText">{{ value }}</p></div>'
+  template: '<div class="gridItem" id="confPlanets"><h3 class="statLabel"> {{ text }}</h3><p class="statText">{{ value }}</p></div>'
 })
 Vue.component('named-stat', {
   props: ['text', 'value', 'units', 'planet', 'planet' ],
-  template: '<div><h3 class="statLabel">{{ text }}</h3> <p class="statText">{{planet}}</p><p class="statText">{{ value }} {{ units }}</p></div>'
+  template: '<div class="gridItem"><h3 class="statLabel">{{ text }}</h3> <p class="statText">{{planet}}</p><p class="statText">{{ value }} {{ units }}</p></div>'
 })
 Vue.component('loader', {
   props:['state'],
-  template: '<div id="loader" class="flex"><div id="lgCircle" class="circle flex"><div id="mdCircle" class="circle flex"><div id="smCircle" class="circle"></div></div></div><div><h1>{{ state }} Data</h1></div></div>'
+  template: '<div id="loader" class="flex"><div id="animation"><div id="lgCircle" class="circle flex"><div id="mdCircle" class="circle flex"><div id="smCircle" class="circle"></div></div></div></div><div><h1>Fetching Data <span id="ticker">.</span></h1></div></div>'
 })
 var app = new Vue({
 el: '#app',
 data: {
   appName: 'ExoVue',
   subhead: 'Exoplanet Data brought to you by VueJS and the NASA Exoplanet Archive',
-  state: 'Fetching',
+  fetching: true,
   confirmedPlanets: {
       value: '',
       text: 'Confirmed Planets'
@@ -109,18 +113,26 @@ data: {
     planet: ''
   }
 },
-methods: {
-  arrayMax: function(){
-    Array.prototype.max = function() {
-  return Math.max.apply(null, this);
-};
-  }
+
+mounted(){
+  var ticker = document.getElementById('ticker');
+  var myInterval = setInterval(function(){
+      console.log(ticker);
+      ticker.classList.toggle('hidden');
+    if(!ticker){
+      clearInterval(myInterval);
+    }
+
+  }, 500);
+},
+updated(){
+
 },
 created(){
   this.$http.get('https://exoplanetarchive.ipac.caltech.edu/cgi-bin/nstedAPI/nph-nstedAPI?table=exoplanets&select=pl_hostname,pl_name,pl_masse,pl_rade,st_dist,pl_orbper,pl_pnum&order=dec&format=json')
   .then(function(data){
     console.log(data)
-    this.state = 'Sorting';
+    this.fetching = false;
     var maxWght, minWght, bigRad, smallRad, closePlan, furthPlan, longOrb, shortOrb;
     var dataLength = data.body.length;
     var weights = [];
@@ -199,6 +211,7 @@ created(){
       }
     }
     this.confirmedPlanets.value = dataLength;
+
   })
 }
 })

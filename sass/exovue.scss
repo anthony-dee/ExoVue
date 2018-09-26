@@ -6,6 +6,9 @@
 body {
   @include  fontFamHelVet;
 }
+.hidden{
+  visibility: hidden;
+}
 .container {
   margin: 0 20%;
   padding: 20px 10px;
@@ -15,7 +18,7 @@ body {
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 20px;
   justify-content: space-evenly;
-  div{
+  .gridItem{
     color: white;
     text-align: center;
     padding: 20px;

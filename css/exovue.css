@@ -1,10 +1,20 @@
 #loader {
   perspective: 400px;
   flex-direction: column;
-  margin: 100px auto;
+  margin: 20px auto;
+  padding-top: 40px;
   background-color: black;
-  height: 500px;
+  height: auto;
   width: 500px;
+  border-radius: 5px;
+}
+
+#loader h1 {
+  color: white;
+}
+
+#animation {
+  padding: 20px;
 }
 
 .circle {
@@ -22,24 +32,32 @@
   align-items: center;
 }
 
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
 #lgCircle {
   height: 250px;
   width: 250px;
-  box-shadow: 0 0 0 20px red;
+  box-shadow: 0 0 0 20px #EA5455;
   animation-name: lgRotate;
 }
 
 #mdCircle {
   height: 150px;
   width: 150px;
-  box-shadow: 0 0 0 20px blue;
+  box-shadow: 0 0 0 20px #0396FF;
   animation-name: mdRotate;
 }
 
 #smCircle {
   height: 50px;
   width: 50px;
-  box-shadow: 0 0 0 20px yellow;
+  box-shadow: 0 0 0 20px #F8D800;
   animation-name: smRotate;
 }
 
@@ -76,6 +94,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.hidden {
+  visibility: hidden;
+}
+
 .container {
   margin: 0 20%;
   padding: 20px 10px;
@@ -88,14 +110,14 @@ body {
   justify-content: space-evenly;
 }
 
-.grid div {
+.grid .gridItem {
   color: white;
   text-align: center;
   padding: 20px;
   border-radius: 5px;
 }
 
-.grid div h3, .grid div p {
+.grid .gridItem h3, .grid .gridItem p {
   margin: 0;
 }
 
