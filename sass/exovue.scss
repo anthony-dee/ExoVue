@@ -10,8 +10,17 @@ body {
   visibility: hidden;
 }
 .container {
-  margin: 0 20%;
   padding: 20px 10px;
+}
+@include nonMobMQ {
+  .container {
+    margin: 0 20%;  
+  }
+}
+@include mobOnlyMQ{
+  .container {
+    margin: 0;
+  }
 }
 .grid {
   display: grid;

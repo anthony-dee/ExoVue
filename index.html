@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ExoVue Test</title>
 
 <link href="https://fonts.googleapis.com/css?family=Comfortaa|Lato:700" rel="stylesheet">
@@ -18,16 +19,16 @@
       </transition>
       <transition name="fade">
         <div v-show="sorted" class="grid">
-          <count-para  id="itemA" :value="confirmedPlanets.value" :text="confirmedPlanets.text"></count-para>
-          <named-stat v-show="!fetching" id="itemB" :units="mostMass.units" :value="mostMass.value" :text="mostMass.text" :planet="mostMass.planet"></named-stat>
-          <named-stat v-show="!fetching" id="itemC" :units="leastMass.units" :value="leastMass.value" :text="leastMass.text" :planet="leastMass.planet"></named-stat>
-          <named-stat v-show="!fetching" id="itemD" :units="biggest.units" :value="biggest.value" :text="biggest.text" :planet="biggest.planet"></named-stat>
-          <named-stat v-show="!fetching" id="itemE" :units="smallest.units" :value="smallest.value" :text="smallest.text" :planet="smallest.planet"></named-stat>
-          <named-stat v-show="!fetching" id="itemF" :units="starWithMostPlanets.units" :value="starWithMostPlanets.value" :text="starWithMostPlanets.text" :planet="starWithMostPlanets.star"></named-stat>
-          <named-stat v-show="!fetching" id="itemG" :units="furthest.units" :value="furthest.value" :text="furthest.text" :planet="furthest.planet"></named-stat>
-          <named-stat v-show="!fetching" id="itemH" :units="closest.units" :value="closest.value" :text="closest.text" :planet="closest.planet"></named-stat>
-          <named-stat v-show="!fetching" id="itemI" :units="longestOrbit.units" :value="longestOrbit.value" :text="longestOrbit.text" :planet="longestOrbit.planet"></named-stat>
-          <named-stat v-show="!fetching" id="itemJ" :units="shortestOrbit.units" :value="shortestOrbit.value" :text="shortestOrbit.text" :planet="shortestOrbit.planet"></named-stat>
+          <count-para id="itemA" :value="confirmedPlanets.value" :text="confirmedPlanets.text"></count-para>
+          <named-stat id="itemB" :units="mostMass.units" :value="mostMass.value" :text="mostMass.text" :planet="mostMass.planet"></named-stat>
+          <named-stat id="itemC" :units="leastMass.units" :value="leastMass.value" :text="leastMass.text" :planet="leastMass.planet"></named-stat>
+          <named-stat id="itemD" :units="biggest.units" :value="biggest.value" :text="biggest.text" :planet="biggest.planet"></named-stat>
+          <named-stat id="itemE" :units="smallest.units" :value="smallest.value" :text="smallest.text" :planet="smallest.planet"></named-stat>
+          <named-stat id="itemF" :units="starWithMostPlanets.units" :value="starWithMostPlanets.value" :text="starWithMostPlanets.text" :planet="starWithMostPlanets.star"></named-stat>
+          <named-stat id="itemG" :units="furthest.units" :value="furthest.value" :text="furthest.text" :planet="furthest.planet"></named-stat>
+          <named-stat id="itemH" :units="closest.units" :value="closest.value" :text="closest.text" :planet="closest.planet"></named-stat>
+          <named-stat id="itemI" :units="longestOrbit.units" :value="longestOrbit.value" :text="longestOrbit.text" :planet="longestOrbit.planet"></named-stat>
+          <named-stat id="itemJ" :units="shortestOrbit.units" :value="shortestOrbit.value" :text="shortestOrbit.text" :planet="shortestOrbit.planet"></named-stat>
         </div>
       </transition>
     </div>
