@@ -10,14 +10,14 @@
 
 <body>
   <div id="app">
-    <div class="container">
+    <div id="container1" class="container">
       <h1>{{ appName }}</h1>
       <h2>{{subhead}}</h2>
       <transition name="fade">
         <loader v-show="fetching"></loader>
       </transition>
       <transition name="fade">
-        <div v-show="!fetching" class="grid">
+        <div v-show="sorted" class="grid">
           <count-para  id="itemA" :value="confirmedPlanets.value" :text="confirmedPlanets.text"></count-para>
           <named-stat v-show="!fetching" id="itemB" :units="mostMass.units" :value="mostMass.value" :text="mostMass.text" :planet="mostMass.planet"></named-stat>
           <named-stat v-show="!fetching" id="itemC" :units="leastMass.units" :value="leastMass.value" :text="leastMass.text" :planet="leastMass.planet"></named-stat>
@@ -29,7 +29,7 @@
           <named-stat v-show="!fetching" id="itemI" :units="longestOrbit.units" :value="longestOrbit.value" :text="longestOrbit.text" :planet="longestOrbit.planet"></named-stat>
           <named-stat v-show="!fetching" id="itemJ" :units="shortestOrbit.units" :value="shortestOrbit.value" :text="shortestOrbit.text" :planet="shortestOrbit.planet"></named-stat>
         </div>
-        </transition>
+      </transition>
     </div>
   </div>
 
@@ -54,6 +54,7 @@ data: {
   appName: 'ExoVue',
   subhead: 'Exoplanet Data brought to you by VueJS and the NASA Exoplanet Archive',
   fetching: true,
+  sorted: false,
   confirmedPlanets: {
       value: '',
       text: 'Confirmed Planets'
@@ -115,6 +116,10 @@ data: {
 },
 
 mounted(){
+  var container = document.getElementById('container1');
+  var loader = document.getElementById('loader');
+  var loaderWidth = ((container.clientWidth - 20) - 500) / 2
+  loader.style.margin = '20px ' + loaderWidth + 'px'
   var ticker = document.getElementById('ticker');
   var myInterval = setInterval(function(){
       //console.log(ticker);
@@ -124,6 +129,7 @@ mounted(){
     }
 
   }, 500);
+
 },
 updated(){
 
@@ -131,7 +137,7 @@ updated(){
 created(){
   this.$http.get('https://exoplanetarchive.ipac.caltech.edu/cgi-bin/nstedAPI/nph-nstedAPI?table=exoplanets&select=pl_status,pl_hostname,pl_name,pl_masse,pl_rade,st_dist,pl_orbper,pl_pnum&order=dec&format=json')
   .then(function(data){
-    console.log(data)
+    //console.log(data)
     this.fetching = false;
     var maxWght, minWght, bigRad, smallRad, closePlan, furthPlan, longOrb, shortOrb;
     var dataLength = data.body.length;
@@ -209,7 +215,7 @@ created(){
       }
     }
     this.confirmedPlanets.value = dataLength;
-
+    this.sorted = true;
   })
 }
 })
