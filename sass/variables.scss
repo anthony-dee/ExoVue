@@ -1,6 +1,14 @@
+//loader
 $lgDiameter: 250px;
 $mdDiameter: 150px;
 $smDiameter: 50px;
+$ringWidth: 20px;
+
+$lgMobDiam: $lgDiameter * 0.8;
+$mdMobDiam: $mdDiameter * 0.8;
+$smMobDiam: $smDiameter * 0.8;
+$mobRingWidth: $ringWidth * 0.8;
+//everything else
 $red: rgb(255,0,0);
 $blue: rgb(0,0,255);
 $loaderRed: #EA5455;

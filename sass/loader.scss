@@ -1,16 +1,45 @@
 @import "variables";
 @import "mixins";
 
+@include nonMobMQ {
+  #loader {
+    width: 500px;
+    margin: 20px auto;
+  }
+  #lgCircle {
+    @include circle($lgDiameter,$loaderRed, $ringWidth, lgRotate )
+  }
+  #mdCircle {
+    @include circle($mdDiameter, $loaderBlue, $ringWidth, mdRotate)
+  }
+  #smCircle {
+    @include circle($smDiameter, $loaderYellow, $ringWidth, smRotate)
+  }
+}
+@include mobOnlyMQ{
+  #loader {
+    width: 90%;
+  }
+  #lgCircle {
+    @include circle($lgMobDiam,$loaderRed, $mobRingWidth, lgRotate )
+  }
+  #mdCircle {
+    @include circle($mdMobDiam, $loaderBlue, $mobRingWidth, mdRotate)
+  }
+  #smCircle {
+    @include circle($smMobDiam, $loaderYellow, $mobRingWidth, smRotate)
+  }
+}
+
 #loader {
   position: absolute;
   z-index: 10;
   perspective: 400px;
   flex-direction: column;
-  margin: 20px auto;
   padding-top: 40px;
   background-color: black;
   height: auto;
-  width: 500px;
+
   border-radius: 5px;
   h1 {
     color: white;
@@ -38,15 +67,7 @@
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
-#lgCircle {
-  @include circle($lgDiameter,$loaderRed, lgRotate )
-}
-#mdCircle {
-  @include circle($mdDiameter, $loaderBlue, mdRotate)
-}
-#smCircle {
-  @include circle($smDiameter, $loaderYellow, smRotate)
-}
+
 
 @keyframes lgRotate {
   0% {

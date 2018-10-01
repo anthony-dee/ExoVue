@@ -28,6 +28,9 @@ body {
   #itemA, #itemF {
     grid-column: 1 / 3;
   }
+  .statText {
+   font-size: 28px;
+  }
 }
 @include mobOnlyMQ{
   .container {
@@ -40,11 +43,12 @@ body {
       padding: 10px;
     }
   }
-
+  .statText {
+   font-size: 24px;
+  }
 }
 .grid {
   display: grid;
-
   justify-content: space-evenly;
   .gridItem{
     color: white;
@@ -78,5 +82,4 @@ body {
 .statText {
  @include fontFamLato;
  color: black;
- font-size: 28px;
 }

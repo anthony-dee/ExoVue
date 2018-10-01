@@ -115,12 +115,19 @@ data: {
     planet: ''
   }
 },
-
 mounted(){
+  var mobBreakPoint = 576;
+  var screenWidth = screen.width;
   var container = document.getElementById('container1');
   var loader = document.getElementById('loader');
-  var loaderWidth = ((container.clientWidth - 20) - 500) / 2
-  loader.style.margin = '20px ' + loaderWidth + 'px'
+  var loaderMargin;
+  if (screenWidth > mobBreakPoint) {
+    loaderMargin  = ((container.clientWidth - 20) - 500) / 2
+    loader.style.margin = '20px ' + loaderMargin + 'px'
+  } else {
+    loaderMargin  = ((container.clientWidth - 20) - loader.clientWidth) / 2
+    loader.style.margin = '20px ' + loaderMargin + 'px'
+  }
   var ticker = document.getElementById('ticker');
   var myInterval = setInterval(function(){
       //console.log(ticker);
@@ -130,10 +137,6 @@ mounted(){
     }
 
   }, 500);
-
-},
-updated(){
-
 },
 created(){
   this.$http.get('https://exoplanetarchive.ipac.caltech.edu/cgi-bin/nstedAPI/nph-nstedAPI?table=exoplanets&select=pl_status,pl_hostname,pl_name,pl_masse,pl_rade,st_dist,pl_orbper,pl_pnum&order=dec&format=json')
@@ -179,7 +182,7 @@ created(){
       var thisItem = data.body[j];
       if (thisItem['pl_masse'] ==  maxWght) {
         this.mostMass.planet = thisItem['pl_name'];
-        this.mostMass.value = maxWght;
+        this.mostMass.value = maxWght.toLocaleString('en');
       }
       if (thisItem['pl_masse'] ==  minWght) {
         this.leastMass.planet = thisItem['pl_name'];
@@ -200,22 +203,22 @@ created(){
       }
       if (thisItem['st_dist'] == furthPlan) {
         this.furthest.planet = thisItem['pl_name'];
-        this.furthest.value = furthPlan;
+        this.furthest.value = furthPlan.toLocaleString('en');
       }
       if (thisItem['pl_orbper'] == longOrb) {
         this.longestOrbit.planet = thisItem['pl_name'];
-        this.longestOrbit.value = longOrb;
+        this.longestOrbit.value = longOrb.toLocaleString('en');
       }
       if (thisItem['pl_orbper'] == shortOrb) {
         this.shortestOrbit.planet = thisItem['pl_name'];
-        this.shortestOrbit.value = shortOrb;
+        this.shortestOrbit.value = shortOrb.toFixed(3);
       }
       if (thisItem['pl_pnum'] == mostPlanets) {
         this.starWithMostPlanets.star = thisItem['pl_hostname'];
         this.starWithMostPlanets.value = mostPlanets;
       }
     }
-    this.confirmedPlanets.value = dataLength;
+    this.confirmedPlanets.value = dataLength.toLocaleString('en');
     this.sorted = true;
   })
 }
